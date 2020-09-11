@@ -35,24 +35,28 @@ public class EmployeesTestServlet extends HttpServlet {
         EntityManager em = DBUtil.createEntityManager();
         em.getTransaction().begin();
 
-        // findメソッドでEmployeeクラスからidが1と2の物を取得
-        Employee employee1 = em.find(Employee.class, 1);
-        Employee employee2 = em.find(Employee.class, 2);
+
+        // セッションスコープからログインしている従業員のデータを取得
+        Employee employee_following = (Employee)request.getSession().getAttribute("login_employee");
+
+        // JSPファイルからリクエストパラメータを取得
+        Employee employee_follower = em.find(Employee.class, Integer.parseInt(request.getParameter("id")));
 
         // RelationShipのインスタンスを生成
         RelationShip r = new RelationShip();
 
         // rのプロパティにデータを代入
-        r.setEmployeeFollowing(employee1);
-        r.setEmployeeFollower(employee2);
+        r.setEmployeeFollowing(employee_following);
+        r.setEmployeeFollower(employee_follower);
 
         // データベースに保存
         em.persist(r);
         em.getTransaction().commit();
         em.close();
 
-        // 自動採番されたIDの値を表示
-        response.getWriter().append(Integer.valueOf(r.getId()).toString());
+        // インデックスページへリダイレクト
+        request.getSession().setAttribute("flush", "フォローしました");
+        response.sendRedirect(request.getContextPath() + "/employees/index");
     }
 }
 
