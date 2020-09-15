@@ -56,7 +56,7 @@ public class EmployeesTestServlet extends HttpServlet {
 
         // インデックスページへリダイレクト
         request.getSession().setAttribute("flush", "フォローしました");
-        response.sendRedirect(request.getContextPath() + "/employees/index");
+        response.sendRedirect(request.getContextPath() + "/");
     }
 }
 
